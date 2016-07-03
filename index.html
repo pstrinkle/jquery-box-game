@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>jquery-box-game by pstrinkle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" media="screen">
+
+    <!-- above the fold, it is render-blocking deliberately. -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- optional -->
+    <script src="assets/js.cookie-2.1.2.min.js"></script>
+    <script src="assets/jquery-levelup/1.0.2/jquery.levelup.min.js"></script>
+    <!-- required -->
+    <script src="assets/jquery-paintbox/0.1.1/jquery.paintbox.min.js"></script>
+    <script src="src/box-game.js"></script>
+
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">jquery-box-game</h1>
+      <h2 class="project-tagline">jQuery plugin that provides a simple box drawing puzzle game.</h2>
+      <a href="https://github.com/pstrinkle/jquery-box-game" class="btn">View on GitHub</a>
+      <a href="https://github.com/pstrinkle/jquery-box-game/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/pstrinkle/jquery-box-game/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3><a id="basics" class="anchor" href="#basics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Basics</h3>
+
+      <p>
+        The game is simple, you are given an empty game board, which you fill in 
+        by placing randomly colored blocks down.  When the blocks create a 
+        rectangle of the same color, the blocks inside the rectangle and the 
+        rectangle itself are cleared from the board earning you points.
+        However, every 1 second the computer randomly clears a block.
+      </p>
+      <p>
+        The game is a little buggy at present, and I'm still open to taking it
+        different directions, such as making the game board slowly erode away 
+        or drop down every few clicks so it's a race against time.
+      </p>
+      
+      <select id='debugoption'>
+        <option selected>Off</option>
+        <option>On</option>
+      </select>
+
+      <span id='points'>0</span> points - <span id='over'></span><br />
+      <button id='start'>Start game</button>
+      <br />
+      <div id='currentColor' style='width:20px;height:20px;'></div>
+      <hr>
+      <div id='container' style='background-color:black;border:5px solid black;display:table-cell;'></div>
+<script>
+$(function() {
+    var $p = $('#points');
+    $p.levelup({'start' : 0});
+    var $c = $('#container');
+
+    $('#start').on('click', function(event) {
+        event.preventDefault();
+        $('#log').empty();
+
+        $p.levelup('reset');
+        $('#over').text('');
+        
+        var debugmode = $('#debugoption option:selected').text();
+        if (debugmode === 'Off') {
+            debugmode = false;
+        } else {
+            debugmode = true;
+        }
+
+        $c.empty();
+        $c.boxGame({rows: 20, cols: 20, offColor: 'white', debug : debugmode});
+
+        $c.on('color-change', function(event, color) {
+            $('#currentColor').css('background-color', color);
+        });
+
+        $c.on('points-earned', function(event, points) {
+            $p.levelup('increment', points);
+        });
+
+        $c.on('game-over', function(event) {
+            $('#over').text('Game over!');
+            var endScore = $p.levelup('get');
+            if (endScore > score) {
+                $('#high').text(endScore);
+                Cookies.set('high', endScore, {expires:365});
+                score = endScore;
+            }
+        });
+
+        $c.boxGame('start');
+    });
+});
+</script>
+
+      <h3>License</h3>
+      <p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></p>
+
+      <footer class="site-footer">
+        <!-- <span class="site-footer-owner"><a href="https://github.com/pstrinkle/jquery-levelup">Jquery-levelup</a> is maintained by <a href="https://github.com/pstrinkle">pstrinkle</a>.</span> -->
+        <a href="https://twitter.com/YammyCozonac" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @YammyCozonac</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <a class="github-button" href="https://github.com/pstrinkle" data-style="mega" aria-label="Follow @pstrinkle on GitHub">Follow @pstrinkle</a>
+        <!-- <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span> -->
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+      </footer>
+    </section>
+  </body>
+</html>
