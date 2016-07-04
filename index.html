@@ -90,20 +90,138 @@ $(function() {
             $p.levelup('increment', points);
         });
 
-        $c.on('game-over', function(event) {
-            $('#over').text('Game over!');
-            var endScore = $p.levelup('get');
-            if (endScore > score) {
-                $('#high').text(endScore);
-                Cookies.set('high', endScore, {expires:365});
-                score = endScore;
-            }
-        });
-
         $c.boxGame('start');
     });
 });
 </script>
+      <h4>Demo setup:</h4>
+      <pre class="prettyprint lang-js">
+$(function() {
+    var $p = $('#points');
+    $p.levelup({'start' : 0});
+    var $c = $('#container');
+
+    $('#start').on('click', function(event) {
+        event.preventDefault();
+        $('#log').empty();
+
+        $p.levelup('reset');
+        $('#over').text('');
+        
+        var debugmode = $('#debugoption option:selected').text();
+        if (debugmode === 'Off') {
+            debugmode = false;
+        } else {
+            debugmode = true;
+        }
+
+        $c.empty();
+        $c.boxGame({rows: 20, cols: 20, offColor: 'white', debug : debugmode});
+
+        $c.on('color-change', function(event, color) {
+            $('#currentColor').css('background-color', color);
+        });
+
+        $c.on('points-earned', function(event, points) {
+            $p.levelup('increment', points);
+        });
+
+        $c.boxGame('start');
+    });
+});</pre>
+
+      <h3>Installation</h3>
+      <p>Basically just include the file.</p>
+      <pre class="prettyprint lang-html">
+&lt;script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script src="/libs/jquery-box-game/jquery.box-game.js"&gt;&lt;/script&gt;
+
+&lt;div id='container'&gt;&lt;/span&gt;
+
+&lt;script&gt;
+    $('#container').boxGame({rows: 20, cols: 20});
+&lt;/script&gt;
+</pre>
+
+      <h3>Usage</h3>
+      <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>rows</td>
+            <td>integer</td>
+            <td><code>50</code></td>
+            <td>Number of rows.</td>
+          </tr>
+          <tr>
+            <td>cols</td>
+            <td>integer</td>
+            <td><code>50</code></td>
+            <td>Number of columns.</td>
+          </tr>
+          <tr>
+            <td>offColor</td>
+            <td>css color string</td>
+            <td><code>white</code></td>
+            <td>Background color for the board.</td>
+          </tr>
+          <tr>
+            <td>colors</td>
+            <td>array of css color strings</td>
+            <td><code>['black', 'green', 'lightgreen', 'lightblue', 'blue', 'red']</code></td>
+            <td>Colors for the blocks</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <br />
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>method</th>
+            <th>param</th>
+            <th>type</th>
+            <th>description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>'start'</code></td>
+            <td></td>
+            <td></td>
+            <td>start the game (or reset the game)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Events</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Handler</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>color-change</code></td>
+            <td><code>function(event, color)</code>: <br>- <code>event</code> - jQuery event<br>- <code>color</code> - next block color</td>
+          </tr>
+          <tr>
+            <td><code>points-earned</code></td>
+            <td><code>function(event, points)</code>: <br>- <code>event</code> - jQuery event <br>- <code>function(event, points)</code> - points earned</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h3>License</h3>
       <p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></p>
